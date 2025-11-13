@@ -38,34 +38,37 @@ export default function KrMain({ navigation }) {
 
   // 📚 카드 렌더링
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() =>
-        navigation.navigate('KrDetail', {
-          book: {
-            title: item.title,
-            author: item.author,
-            publisher: item.publisher,
-            image: item.image,
-            link: item.link,
-          },
-        })
-      }
-    >
-      {item.image ? (
-        <Image source={{ uri: item.image }} style={styles.image} />
-      ) : (
-        <View style={styles.imagePlaceholder}>
-          <Text style={{ color: '#555' }}>No Image</Text>
-        </View>
-      )}
-      <Text style={styles.title} numberOfLines={2}>
-        {item.title}
-      </Text>
-      <Text style={styles.author} numberOfLines={1}>
-        {item.author}
-      </Text>
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() =>
+          navigation.navigate('KrDetail', {
+            book: {
+              title: item.title,
+              author: item.author,
+              publisher: item.publisher,
+              image: item.image,
+              link: item.link,
+              country: 'KR',
+            },
+          })
+        }
+      >
+        {item.image ? (
+          <Image source={{ uri: item.image }} style={styles.image} />
+        ) : (
+          <View style={styles.imagePlaceholder}>
+            <Text style={{ color: '#555' }}>No Image</Text>
+          </View>
+        )}
+        <Text style={styles.title} numberOfLines={2}>
+          {item.title}
+        </Text>
+        <Text style={styles.author} numberOfLines={1}>
+          {item.author}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 
   return (

@@ -10,11 +10,13 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
+import { useBookmark } from '../BookmarkContext';
 
 export default function UsDetail({ route, navigation }) {
   const { book } = route.params;
   const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { isBookmarked, toggleBookmark } = useBookmark();
 
   // UsDetail.js의 useEffect 부분 수정
   useEffect(() => {
@@ -65,6 +67,14 @@ export default function UsDetail({ route, navigation }) {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <Image source={{ uri: book.image }} style={styles.image} />
+        <TouchableOpacity
+          style={styles.bookmarkButton}
+          onPress={() => toggleBookmark({ ...book, country: 'US' })} // item → book
+        >
+          <Text style={styles.bookmarkIcon}>
+            {isBookmarked(book.title) ? '⭐' : '☆'} {/* item → book */}
+          </Text>
+        </TouchableOpacity>
         <Text style={styles.title}>{book.title}</Text>
         <Text style={styles.author}>{book.author || '저자 정보 없음'}</Text>
 
@@ -180,4 +190,23 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   linkText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  cardContainer: {
+    flex: 1,
+    position: 'relative',
+    marginBottom: 25,
+  },
+  bookmarkButton: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bookmarkIcon: {
+    fontSize: 20,
+  },
 });

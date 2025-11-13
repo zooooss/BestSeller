@@ -46,7 +46,8 @@ export default function UsMain({ navigation }) {
             title: item.title,
             author: item.author,
             image: item.image,
-            link: item.link, // ✅ link 추가!
+            link: item.link, //link 추가
+            country: 'US',
           },
         })
       }

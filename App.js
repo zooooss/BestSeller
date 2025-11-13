@@ -8,12 +8,20 @@ import JpMain from './country/jpmain';
 import JpDetail from './country/jpdetail';
 import KrDetail from './country/krdetail';
 import UsDetail from './country/usdetail';
+import { BookmarkProvider } from './BookmarkContext';
+import BookmarkScreen from './Bookmark';
 
 const Stack = createNativeStackNavigator();
 
 function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.countryButton}
+        onPress={() => navigation.navigate('Bookmark')}
+      >
+        <Text style={styles.buttonText}>🔖 내 북마크 확인하기</Text>
+      </TouchableOpacity>
       <Text style={styles.title}>🌏 나라를 선택하세요</Text>
 
       <TouchableOpacity
@@ -41,17 +49,20 @@ function HomeScreen({ navigation }) {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="KrMain" component={KrMain} />
-        <Stack.Screen name="UsMain" component={UsMain} />
-        <Stack.Screen name="KrDetail" component={KrDetail} />
-        <Stack.Screen name="UsDetail" component={UsDetail} />
-        <Stack.Screen name="JpMain" component={JpMain} />
-        <Stack.Screen name="JpDetail" component={JpDetail} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <BookmarkProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="KrMain" component={KrMain} />
+          <Stack.Screen name="UsMain" component={UsMain} />
+          <Stack.Screen name="KrDetail" component={KrDetail} />
+          <Stack.Screen name="UsDetail" component={UsDetail} />
+          <Stack.Screen name="JpMain" component={JpMain} />
+          <Stack.Screen name="JpDetail" component={JpDetail} />
+          <Stack.Screen name="Bookmark" component={BookmarkScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </BookmarkProvider>
   );
 }
 
@@ -78,6 +89,19 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     fontSize: 18,
+    fontWeight: '600',
+  },
+  countryButton: {
+    backgroundColor: '#ffa500', // 오렌지 색
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 10,
+    marginVertical: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: '600',
   },
 });

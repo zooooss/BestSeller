@@ -45,6 +45,7 @@ export default function JpMain({ navigation }) {
             author: item.author,
             image: item.image,
             link: item.link,
+            country: 'JP',
           },
         })
       }
