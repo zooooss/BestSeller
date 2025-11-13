@@ -47,6 +47,7 @@ export default function KrMain({ navigation }) {
             author: item.author,
             publisher: item.publisher,
             image: item.image,
+            link: item.link,
           },
         })
       }
@@ -63,9 +64,6 @@ export default function KrMain({ navigation }) {
       </Text>
       <Text style={styles.author} numberOfLines={1}>
         {item.author}
-      </Text>
-      <Text style={styles.publisher} numberOfLines={1}>
-        {item.publisher}
       </Text>
     </TouchableOpacity>
   );

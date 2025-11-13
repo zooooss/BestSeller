@@ -40,7 +40,12 @@ export default function JpMain({ navigation }) {
       style={styles.card}
       onPress={() =>
         navigation.navigate('JpDetail', {
-          book: item,
+          book: {
+            title: item.title,
+            author: item.author,
+            image: item.image,
+            link: item.link,
+          },
         })
       }
     >

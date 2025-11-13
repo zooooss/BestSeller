@@ -1,4 +1,3 @@
-// UsMain.js
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -47,6 +46,7 @@ export default function UsMain({ navigation }) {
             title: item.title,
             author: item.author,
             image: item.image,
+            link: item.link, // ✅ link 추가!
           },
         })
       }
@@ -75,13 +75,13 @@ export default function UsMain({ navigation }) {
           style={styles.navButton}
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.navText}>⬅ 뒤로가기</Text>
+          <Text style={styles.navText}>⬅ BACK</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
           onPress={() => navigation.navigate('Home')}
         >
-          <Text style={styles.navText}>🏠 홈</Text>
+          <Text style={styles.navText}>🏠 HOME</Text>
         </TouchableOpacity>
       </View>
 
