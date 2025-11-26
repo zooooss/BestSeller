@@ -1,0 +1,127 @@
+{
+  "timestamp": 1764120944993,
+  "data": {
+    "books": [
+      {
+        "title": "The Let Them Theory: A Life-Changing Tool That Millions of People Can't Stop Talking About",
+        "author": "Mel Robbins",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/91ZVf3kNrcL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Let-Them-Theory-Life-Changing-Millions/dp/1401971369/ref=zg_bs_g_books_d_sccl_1/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "How To Draw Everything: 300 Drawings of Cute Stuff, Animals, Food, Gifts, and other Amazing Things | Book For Kids",
+        "author": "Emma Greene",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/613znXUaEWL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/How-Draw-Everything-Drawings-Animals/dp/B0CNQ5X4Y1/ref=zg_bs_g_books_d_sccl_2/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "Dog Man: Big Jim Believes: A Graphic Novel (Dog Man #14): From the Creator of Captain Underpants",
+        "author": "Dav Pilkey",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/91cUuNGL-GL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Dog-Man-Believes-Graphic-Underpants/dp/1546176187/ref=zg_bs_g_books_d_sccl_3/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "Partypooper: A side-splitting birthday disaster from the #1 international bestselling Diary of a Wimpy Kid series (Book 20) (Volume 20)",
+        "author": "Jeff Kinney",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/814LTJ3g+VL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Partypooper-side-splitting-birthday-international-bestselling/dp/141978269X/ref=zg_bs_g_books_d_sccl_4/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "The Miracles Among Us: How God's Grace Plays a Role in Healing",
+        "author": "Dr. Marc Siegel",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/71FpanHsQ-L._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Miracles-Among-Us-Grace-Healing/dp/0063426285/ref=zg_bs_g_books_d_sccl_5/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "The Book of Unusual Knowledge: Big Book of Fascinating Facts & Information | Hardcover Gift for Trivia Buffs, Curious Minds, Adults, Dad & Knowledge Seekers",
+        "author": "Publications International Ltd.",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/81AbM2vPvPL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Unusual-Knowledge-Editors-Publications-International/dp/1450845800/ref=zg_bs_g_books_d_sccl_6/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "Lots of Knock-Knock Jokes for Kids: A Funny, Laugh Out Loud Busy Book for Children with Over 250 Jokes, Riddles, Tongue Twisters, and Puns",
+        "author": "Whee Winn",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/71wiPj9w1KL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Lots-Knock-Knock-Jokes-Kids-Whee/dp/0310750628/ref=zg_bs_g_books_d_sccl_7/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "How to Catch Santa Claus",
+        "author": "Alice Walstead",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/91G2sdFZ3LL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Catch-Santa-Claus-Alice-Walstead/dp/1728274273/ref=zg_bs_g_books_d_sccl_8/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "The Christmas Blessing: A One-of-a-Kind Nativity Story for Kids about the Love That Brings Us Together",
+        "author": "Erin Guendelsberger",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/81wvONF5CcL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Christmas-Blessing-One-Kind-Nativity/dp/1728240492/ref=zg_bs_g_books_d_sccl_9/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "Stocking Stuffer Mad Libs: World's Greatest Word Game About Christmas",
+        "author": "Leigh Olsen",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/81IvE9jLmkL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Stocking-Stuffer-Libs-Leigh-Olsen/dp/1524788139/ref=zg_bs_g_books_d_sccl_10/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "World of Eric Carle, Around the Farm 30-Button Animal Sound Book - Great for First Words - PI Kids",
+        "author": "PI Kids",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/91WyMdm13iL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/World-Carle-Around-Play-Sound/dp/1450805752/ref=zg_bs_g_books_d_sccl_11/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "To Die For: A Cookbook of Gravestone Recipes",
+        "author": "Rosie Grant",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/918sSKUaoOL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Die-Cookbook-Gravestone-Recipes/dp/0063424401/ref=zg_bs_g_books_d_sccl_12/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "How to Catch a Snowman",
+        "author": "Adam Wallace",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/91kahepKDiL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/How-Catch-Snowman-Adam-Wallace/dp/1728236207/ref=zg_bs_g_books_d_sccl_13/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "How to Catch an Elf",
+        "author": "Adam Wallace",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/81RoKt2gqWL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/How-Catch-Elf-Adam-Wallace/dp/1492646318/ref=zg_bs_g_books_d_sccl_14/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "Murdle: Volume 1",
+        "author": "G T Karber",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/7198Z7YiOPL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Murdle-Elementary-Impossible-Mysteries-Deduction/dp/1250892317/ref=zg_bs_g_books_d_sccl_15/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "Brimstone (Deluxe Limited Edition) (Fae & Alchemy, 2)",
+        "author": "Callie Hart",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/81T4ItM5TzL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Brimstone-Deluxe-Limited-Callie-Hart/dp/1538774224/ref=zg_bs_g_books_d_sccl_16/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "The Berenstain Bears and the Joy of Giving: The True Meaning of Christmas",
+        "author": "Jan Berenstain",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/91bGuXgbF6L._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Berenstain-Bears-Joy-Giving/dp/0310712556/ref=zg_bs_g_books_d_sccl_17/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "Sunrise on the Reaping (The Hunger Games)",
+        "author": "Suzanne Collins",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/61o5Q8IIq4L._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Sunrise-Reaping-Hunger-Games-Novel/dp/1546171460/ref=zg_bs_g_books_d_sccl_18/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "How to Test Negative for Stupid: And Why Washington Never Will―A Senator's Funny and Perceptive Takedown of Washington Politics",
+        "author": "John Kennedy",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/71tbImx2YVL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/How-Test-Negative-Stupid-Washington/dp/0063428164/ref=zg_bs_g_books_d_sccl_19/141-6559454-2350228?psc=1"
+      },
+      {
+        "title": "The Widow: A Novel",
+        "author": "John Grisham",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/81CWXchKvRL._AC_UL600_SR600,400_.jpg",
+        "link": "https://www.amazon.com/Widow-Novel-John-Grisham/dp/0385548982/ref=zg_bs_g_books_d_sccl_20/141-6559454-2350228?psc=1"
+      }
+    ]
+  }
+}

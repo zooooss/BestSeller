@@ -895,7 +895,7 @@ app.get('/cache-status', async (req, res) => {
   }
 });
 
-// 캐시 강제 삭제 엔드포인트 (선택사항)
+// 캐시 강제 삭제 엔드포인트
 app.delete('/cache/:country', async (req, res) => {
   try {
     const { country } = req.params;
@@ -944,11 +944,134 @@ app.delete('/cache/:country', async (req, res) => {
   }
 });
 
-app.listen(4000, () => {
+// 🔄 서버 시작 시 캐시 워밍업 (자동 크롤링)
+async function warmupCache() {
+  console.log('🔥 캐시 워밍업 시작...');
+
+  const countries = ['kr', 'us', 'jp'];
+
+  for (const country of countries) {
+    try {
+      const cachedData = await readCache(country);
+
+      if (!cachedData) {
+        console.log(`⏳ ${country.toUpperCase()} 캐시 없음 - 크롤링 시작...`);
+
+        // 각 국가별로 크롤링 실행
+        let booksResponse;
+        if (country === 'kr') {
+          booksResponse = await axios.get('http://localhost:4000/kr-books');
+        } else if (country === 'us') {
+          booksResponse = await axios.get('http://localhost:4000/us-books');
+        } else if (country === 'jp') {
+          booksResponse = await axios.get('http://localhost:4000/jp-books');
+        }
+
+        console.log(`✅ ${country.toUpperCase()} 목록 워밍업 완료`);
+
+        // 🔑 상세 정보도 미리 크롤링
+        if (booksResponse?.data?.books) {
+          console.log(`⏳ ${country.toUpperCase()} 상세 정보 워밍업 시작...`);
+          await warmupBookDetails(country, booksResponse.data.books);
+        }
+      } else {
+        console.log(`✅ ${country.toUpperCase()} 캐시 이미 존재 (워밍업 생략)`);
+      }
+    } catch (err) {
+      console.error(`❌ ${country.toUpperCase()} 워밍업 실패:`, err.message);
+    }
+  }
+
+  console.log('🎉 캐시 워밍업 완료! 서버 준비됨');
+}
+
+// 🔥 책 상세 정보 워밍업 (백그라운드에서 천천히 크롤링)
+async function warmupBookDetails(country, books) {
+  let successCount = 0;
+  let skipCount = 0;
+
+  for (const [index, book] of books.entries()) {
+    if (!book.link) continue;
+
+    try {
+      // 이미 캐시가 있는지 확인
+      const cachedDetail = await readDetailCache(country, book.link);
+      if (cachedDetail) {
+        skipCount++;
+        continue;
+      }
+
+      // 캐시가 없으면 크롤링
+      const endpoint =
+        country === 'kr'
+          ? '/kr-book-detail'
+          : country === 'us'
+          ? '/us-book-detail'
+          : '/jp-book-detail';
+
+      await axios.get(
+        `http://localhost:4000${endpoint}?url=${encodeURIComponent(book.link)}`,
+      );
+      successCount++;
+
+      console.log(
+        `  📖 ${country.toUpperCase()} [${index + 1}/${
+          books.length
+        }] ${book.title?.substring(0, 30)}... 완료`,
+      );
+
+      // 서버 부담 줄이기 위해 각 책 사이 2초 대기
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    } catch (err) {
+      console.error(
+        `  ❌ ${country.toUpperCase()} [${index + 1}] 상세 정보 실패:`,
+        err.message,
+      );
+    }
+  }
+
+  console.log(
+    `✅ ${country.toUpperCase()} 상세 정보 워밍업 완료 (성공: ${successCount}, 스킵: ${skipCount})`,
+  );
+}
+
+// 🕐 정기적인 캐시 갱신 (6일마다 자동 갱신)
+function startCacheRefreshSchedule() {
+  const SIX_DAYS = 6 * 24 * 60 * 60 * 1000; // 6일 (7일 전에 미리 갱신)
+
+  setInterval(async () => {
+    console.log('⏰ 정기 캐시 갱신 시작...');
+
+    // 모든 캐시 삭제
+    for (const country of ['kr', 'us', 'jp']) {
+      try {
+        const cacheFile = CACHE_FILES[country];
+        await fs.unlink(cacheFile);
+        console.log(`🗑️ ${country.toUpperCase()} 캐시 삭제`);
+      } catch (err) {
+        // 파일 없으면 무시
+      }
+    }
+
+    // 새로 크롤링
+    await warmupCache();
+    // 캐시 갱신 후 책 상세 정보 워밍업
+  }, SIX_DAYS);
+
+  console.log('⏰ 정기 갱신 스케줄러 시작 (6일마다)');
+}
+
+app.listen(4000, async () => {
+  // ⭐ async 추가
   console.log('🚀 Server running on port 4000');
   console.log('📦 캐시 기능 활성화 (유효기간: 7일)');
   console.log('📂 캐시 저장 경로:', CACHE_DIR);
+
+  // ⭐ 서버 시작 후 자동 워밍업
+  setTimeout(() => {
+    warmupCache().catch(err => console.error('워밍업 에러:', err));
+  }, 1000); // 1초 후 시작 (서버 완전히 켜진 후)
+
+  // ⭐ 정기 갱신 스케줄러 시작
+  startCacheRefreshSchedule();
 });
-app.listen(4000, () => console.log(`🚀 JP Server running on port 4000`));
-app.listen(4000, () => console.log('🚀 Amazon Server running on port 4000'));
-app.listen(4000, () => console.log('🚀 Server running on port 4000'));

@@ -8,15 +8,19 @@ import {
   TouchableOpacity,
   Linking,
   ActivityIndicator,
+  Modal,
   StyleSheet,
 } from 'react-native';
 import { useBookmark } from '../BookmarkContext';
+import { WebView } from 'react-native-webview';
 
 export default function UsDetail({ route, navigation }) {
   const { book } = route.params;
   const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const { isBookmarked, toggleBookmark } = useBookmark();
+  const [showWiki, setShowWiki] = useState(false);
+  const [wikiUrl, setWikiUrl] = useState('');
 
   // UsDetail.js의 useEffect 부분 수정
   useEffect(() => {
@@ -46,7 +50,17 @@ export default function UsDetail({ route, navigation }) {
       setLoading(false);
     }
   }, [book.link]);
-
+  // 작가 검색 함수
+  const searchAuthor = authorName => {
+    if (!authorName || authorName === '저자 정보 없음') {
+      return;
+    }
+    const url = `https://en.wikipedia.org/wiki/${encodeURIComponent(
+      authorName,
+    )}`;
+    setWikiUrl(url);
+    setShowWiki(true);
+  };
   return (
     <View style={styles.container}>
       {/* 상단 버튼 */}
@@ -76,8 +90,12 @@ export default function UsDetail({ route, navigation }) {
           </Text>
         </TouchableOpacity>
         <Text style={styles.title}>{book.title}</Text>
-        <Text style={styles.author}>{book.author || '저자 정보 없음'}</Text>
-
+        {/* 작가 이름 클릭 가능하게 변경 */}
+        <TouchableOpacity onPress={() => searchAuthor(book.author)}>
+          <Text style={styles.author}>
+            {book.author || '저자 정보 없음'} 🔍
+          </Text>
+        </TouchableOpacity>
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#ff8c00" />
@@ -129,6 +147,24 @@ export default function UsDetail({ route, navigation }) {
           <Text style={styles.linkText}>🔗 Amazon에서 자세히 보기</Text>
         </TouchableOpacity>
       </ScrollView>
+      {/* Wikipedia 모달 */}
+      <Modal
+        visible={showWiki}
+        animationType="slide"
+        onRequestClose={() => setShowWiki(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setShowWiki(false)}
+            >
+              <Text style={styles.closeButtonText}>✕</Text>
+            </TouchableOpacity>
+          </View>
+          <WebView source={{ uri: wikiUrl }} style={styles.webview} />
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -208,5 +244,32 @@ const styles = StyleSheet.create({
   },
   bookmarkIcon: {
     fontSize: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  modalHeader: {
+    backgroundColor: '#111',
+    paddingTop: 50,
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+    alignItems: 'flex-end',
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#333',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  webview: {
+    flex: 1,
   },
 });

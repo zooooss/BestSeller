@@ -10,37 +10,54 @@ import KrDetail from './country/krdetail';
 import UsDetail from './country/usdetail';
 import { BookmarkProvider } from './BookmarkContext';
 import BookmarkScreen from './Bookmark';
+//앰플리튜드 등록
+import * as amplitude from '@amplitude/analytics-react-native';
 
 const Stack = createNativeStackNavigator();
 
 function HomeScreen({ navigation }) {
+  // 북마크 버튼 클릭 핸들러
+  const handleBookmarkClick = () => {
+    amplitude.track('bookmark_Clicked');
+    navigation.navigate('Bookmark');
+  };
+
+  // 한국 버튼 클릭 핸들러
+  const handleKoreaClick = () => {
+    amplitude.track('Korea_Clicked');
+    navigation.navigate('KrMain');
+  };
+
+  // 미국 버튼 클릭 핸들러
+  const handleUSClick = () => {
+    amplitude.track('US_Clicked');
+    navigation.navigate('UsMain');
+  };
+
+  // 일본 버튼 클릭 핸들러
+  const handleJapanClick = () => {
+    amplitude.track('Japan_Clicked');
+    navigation.navigate('JpMain');
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.countryButton}
-        onPress={() => navigation.navigate('Bookmark')}
+        onPress={handleBookmarkClick}
       >
         <Text style={styles.buttonText}>🔖 내 북마크 확인하기</Text>
       </TouchableOpacity>
       <Text style={styles.title}>🌏 나라를 선택하세요</Text>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('KrMain')}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleKoreaClick}>
         <Text style={styles.text}>🇰🇷 한국 베스트셀러</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('UsMain')}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleUSClick}>
         <Text style={styles.text}>🇺🇸 미국 베스트셀러</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('JpMain')}
-      >
+
+      <TouchableOpacity style={styles.button} onPress={handleJapanClick}>
         <Text style={styles.text}>🇯🇵 일본 베스트셀러</Text>
       </TouchableOpacity>
     </View>
@@ -48,6 +65,21 @@ function HomeScreen({ navigation }) {
 }
 
 export default function App() {
+  React.useEffect(() => {
+    const initAmplitude = async () => {
+      try {
+        await amplitude.init(process.env.AMPLITUDE_API_KEY, undefined, {
+          disableCookies: true,
+        });
+        console.log('✅ Amplitude 초기화 성공!');
+      } catch (error) {
+        console.error('❌ Amplitude 초기화 실패:', error);
+      }
+    };
+
+    initAmplitude();
+    console.log('===== initAmplitude 함수 호출 완료 ====='); // 🔥
+  }, []);
   return (
     <BookmarkProvider>
       <NavigationContainer>
