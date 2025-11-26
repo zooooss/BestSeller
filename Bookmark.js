@@ -54,11 +54,17 @@ export default function Bookmark({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+      <View style={styles.headerButtons}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.goBack()}
+        >
           <Text style={styles.navText}>⬅ 뒤로가기</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('Home')}
+        >
           <Text style={styles.navText}>🏠 홈</Text>
         </TouchableOpacity>
       </View>
@@ -85,12 +91,17 @@ export default function Bookmark({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000', padding: 20 },
-  header: {
+  headerButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 15,
   },
-  navText: { color: '#ff8c00', fontSize: 16 },
+  navButton: {
+    backgroundColor: '#222',
+    padding: 10,
+    borderRadius: 10,
+  },
+  navText: { color: '#ff8c00', fontSize: 14 },
   headerTitle: {
     color: '#fff',
     fontSize: 24,

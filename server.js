@@ -4,13 +4,150 @@ import * as cheerio from 'cheerio';
 import cors from 'cors';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+//아래는 캐시화를 위해 추가한 임포트문
+import fs from 'fs/promises'; //노드에서 사용가능한 내장함수로 filesystem 함수 여럿 내장되어있음
+import path from 'path';
+import { Buffer } from 'node:buffer';
 
 puppeteer.use(StealthPlugin());
 
 const app = express();
 app.use(cors());
+
+// 캐시 디렉토리 경로
+const CACHE_DIR = path.join(process.cwd(), 'crawlCache');
+const CACHE_FILES = {
+  kr: path.join(CACHE_DIR, 'krbooks.json'),
+  us: path.join(CACHE_DIR, 'usbooks.json'),
+  jp: path.join(CACHE_DIR, 'jpbooks.json'),
+};
+// 상세 정보 캐시 디렉토리
+const DETAIL_CACHE_DIR = path.join(CACHE_DIR, 'details');
+
+// 캐시 유효 기간 (7일 = 604800000ms)
+const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000;
+
+// 캐시 디렉토리 생성
+async function ensureCacheDir() {
+  try {
+    await fs.access(CACHE_DIR); //폴더존재확인하는부분!
+  } catch {
+    await fs.mkdir(CACHE_DIR, { recursive: true }); //없으면 생성
+  }
+
+  try {
+    await fs.access(DETAIL_CACHE_DIR); //중첩폴더의미! details 이 부분
+  } catch {
+    await fs.mkdir(DETAIL_CACHE_DIR, { recursive: true });
+  }
+}
+
+// 캐시 읽기
+async function readCache(country) {
+  try {
+    const cacheFile = CACHE_FILES[country];
+    const data = await fs.readFile(cacheFile, 'utf-8');
+    const cache = JSON.parse(data);
+
+    // 캐시가 유효한지 확인
+    const now = Date.now();
+    if (now - cache.timestamp < CACHE_DURATION) {
+      console.log(
+        `✅ ${country.toUpperCase()} 캐시 사용 (${new Date(
+          cache.timestamp,
+        ).toLocaleString()}에 저장됨)`,
+      );
+      return cache.data;
+    } else {
+      console.log(`⏰ ${country.toUpperCase()} 캐시 만료됨`);
+      return null;
+    }
+  } catch (err) {
+    console.log(
+      `📝 ${country.toUpperCase()} 캐시 파일 없음, 새로 크롤링합니다`,
+    );
+    return null;
+  }
+}
+
+// 캐시 저장
+async function writeCache(country, data) {
+  try {
+    await ensureCacheDir();
+    const cacheFile = CACHE_FILES[country];
+    const cache = {
+      timestamp: Date.now(),
+      data: data,
+    };
+    await fs.writeFile(cacheFile, JSON.stringify(cache, null, 2), 'utf-8');
+    console.log(`💾 ${country.toUpperCase()} 캐시 저장 완료`);
+  } catch (err) {
+    console.error(`❌ ${country.toUpperCase()} 캐시 저장 실패:`, err);
+  }
+}
+
+// URL을 파일명으로 변환 (특수문자 제거)
+function urlToFileName(url) {
+  return Buffer.from(url).toString('base64').replace(/[/+=]/g, '_');
+}
+
+// 상세 정보 캐시 읽기
+async function readDetailCache(country, url) {
+  try {
+    const fileName = urlToFileName(url);
+    const filePath = path.join(DETAIL_CACHE_DIR, `${country}_${fileName}.json`);
+
+    const data = await fs.readFile(filePath, 'utf-8');
+    const cache = JSON.parse(data);
+
+    // 캐시가 유효한지 확인
+    const now = Date.now();
+    if (now - cache.timestamp < CACHE_DURATION) {
+      console.log(`✅ ${country.toUpperCase()} 상세 정보 캐시 사용`);
+      return cache.data;
+    } else {
+      console.log(`⏰ ${country.toUpperCase()} 상세 정보 캐시 만료됨`);
+      return null;
+    }
+  } catch (err) {
+    console.log(
+      `📝 ${country.toUpperCase()} 상세 정보 캐시 없음, 새로 크롤링합니다`,
+    );
+    return null;
+  }
+}
+
+// 상세 정보 캐시 저장
+async function writeDetailCache(country, url, data) {
+  try {
+    await ensureCacheDir();
+    const fileName = urlToFileName(url);
+    const filePath = path.join(DETAIL_CACHE_DIR, `${country}_${fileName}.json`);
+
+    const cache = {
+      timestamp: Date.now(),
+      url: url,
+      data: data,
+    };
+
+    await fs.writeFile(filePath, JSON.stringify(cache, null, 2), 'utf-8');
+    console.log(`💾 ${country.toUpperCase()} 상세 정보 캐시 저장 완료`);
+  } catch (err) {
+    console.error(`❌ ${country.toUpperCase()} 상세 정보 캐시 저장 실패:`, err);
+  }
+}
+
+// 한국 베스트셀러
 app.get('/kr-books', async (req, res) => {
   try {
+    // 캐시 확인
+    const cachedData = await readCache('kr');
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
+    // 캐시가 없으면 크롤링
+    console.log('🔄 한국 베스트셀러 크롤링 시작...');
     const { data } = await axios.get(
       'https://www.aladin.co.kr/shop/common/wbest.aspx?BranchType=1&BestType=Bestseller',
     );
@@ -19,31 +156,25 @@ app.get('/kr-books', async (req, res) => {
     const books = [];
 
     $('div.ss_book_box').each((i, el) => {
-      if (books.length >= 20) return false; // 상위 20개만
+      if (books.length >= 20) return false;
 
       let imgSrc = $(el).find('img').attr('src');
 
-      // 이미지 URL 처리
       if (!imgSrc) return;
       if (imgSrc.startsWith('//')) {
         imgSrc = 'https:' + imgSrc;
       }
       if (!imgSrc.startsWith('https://image.aladin.co.kr/product')) return;
 
-      // 제목, 저자, 출판사 추출
       const title =
         $(el).find('a.bo3').text().trim() ||
         $(el).find('.ss_book_list a').first().text().trim();
 
-      // ✅ ss_book_list의 모든 li를 순회
       let author = '저자 미상';
-
       $(el)
         .find('.ss_book_list ul li')
         .each((idx, li) => {
           const liText = $(li).text().trim();
-
-          // | 기호가 포함되어 있고, "지은이" 또는 "옮긴이" 같은 키워드가 있으면 저자 정보
           if (
             liText.includes('|') &&
             (liText.includes('지은이') ||
@@ -53,17 +184,16 @@ app.get('/kr-books', async (req, res) => {
               liText.includes('그림'))
           ) {
             const parts = liText.split('|').map(p => p.trim());
-
-            // 첫 번째 부분이 저자
             if (parts[0]) {
               author = parts[0];
             }
-
-            return false; // 찾았으면 반복 중단
+            return false;
           }
         });
+
       const publisher =
         $(el).find('.ss_book_list').text().split('|')[1]?.trim() || '';
+
       books.push({
         title: title || '제목 없음',
         author: author || '저자 미상',
@@ -72,10 +202,9 @@ app.get('/kr-books', async (req, res) => {
         link:
           $(el).find('a.bo3').attr('href') ||
           $(el).find('.ss_book_list a').first().attr('href') ||
-          '', // ✅ link 추가
+          '',
       });
 
-      // link가 상대 경로면 절대 경로로 변환
       if (
         books[books.length - 1].link &&
         !books[books.length - 1].link.startsWith('http')
@@ -86,23 +215,31 @@ app.get('/kr-books', async (req, res) => {
     });
 
     console.log('✅ 한국 크롤링 성공:', books.length, '권');
-    res.json({ books });
+
+    const result = { books };
+    await writeCache('kr', result);
+    res.json(result);
   } catch (err) {
     console.error('❌ 한국 크롤링 실패:', err);
     res.status(500).json({ error: '크롤링 실패', message: err.message });
   }
 });
 
-// 📘 한국 책 상세 정보 크롤링
+// 한국 책 상세 정보 (캐시 적용)
 app.get('/kr-book-detail', async (req, res) => {
   try {
     const { url } = req.query;
-
     if (!url) {
       return res.status(400).json({ error: 'URL이 필요합니다' });
     }
 
-    console.log('📘 한국 책 상세 정보 요청:', url);
+    // 캐시 확인
+    const cachedData = await readDetailCache('kr', url);
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
+    console.log('📘 한국 책 상세 정보 크롤링:', url);
 
     const browser = await puppeteer.launch({
       headless: true,
@@ -117,16 +254,12 @@ app.get('/kr-book-detail', async (req, res) => {
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
     await new Promise(resolve => setTimeout(resolve, 3000));
 
-    // 스크롤
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight / 2);
     });
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     const bookDetail = await page.evaluate(() => {
-      console.log('=== 알라딘 상세 페이지 크롤링 시작 ===');
-
-      // ✅ 책 소개 (Ere_prod_mconts_R - 첫 번째)
       let description = '';
       const boxes = document.querySelectorAll('.Ere_prod_mconts_box');
 
@@ -139,51 +272,32 @@ app.get('/kr-book-detail', async (req, res) => {
         const title = titleEl.innerText.trim();
         const content = contentEl.innerText.trim();
 
-        console.log(
-          `박스 ${idx + 1}: 제목="${title}", 내용 길이=${content.length}자`,
-        );
-
-        // 책소개
         if (title.includes('책소개') || title === '책소개') {
           description = content;
-          console.log('✅ 책 소개 찾음');
         }
       });
 
-      // ✅ 줄거리 (Ere_prod_mconts_R - 두 번째)
       let plot = '';
       const storyShort = document.getElementById('div_Story_Short');
       const storyAll = document.getElementById('div_Story_All');
 
       if (storyAll && storyAll.style.display !== 'none') {
         plot = storyAll.innerText.trim();
-        console.log('✅ 줄거리 찾음 (div_Story_All):', plot.length + '자');
       } else if (storyShort) {
         plot = storyShort.innerText.trim();
-        console.log('✅ 줄거리 찾음 (div_Story_Short):', plot.length + '자');
       }
 
-      // ✅ 저자 소개 (introduction 또는 author_box)
       let authorInfo = '';
       const introEl = document.querySelector('.introduction');
       if (introEl) {
         authorInfo = introEl.innerText.trim();
-        console.log(
-          '✅ 저자 소개 찾음 (introduction):',
-          authorInfo.substring(0, 100),
-        );
       } else {
         const authorBox = document.querySelector('.author_box');
         if (authorBox) {
           authorInfo = authorBox.innerText.trim();
-          console.log(
-            '✅ 저자 소개 찾음 (author_box):',
-            authorInfo.substring(0, 100),
-          );
         }
       }
 
-      // 출판 정보
       let publisher = '';
       let publishDate = '';
 
@@ -206,11 +320,6 @@ app.get('/kr-book-detail', async (req, res) => {
         });
       }
 
-      console.log('=== 크롤링 결과 ===');
-      console.log('책 소개:', description ? `${description.length}자` : '없음');
-      console.log('줄거리:', plot ? `${plot.length}자` : '없음');
-      console.log('저자 소개:', authorInfo ? `${authorInfo.length}자` : '없음');
-
       return {
         description,
         plot,
@@ -222,23 +331,8 @@ app.get('/kr-book-detail', async (req, res) => {
 
     await browser.close();
 
-    console.log('✅ 한국 책 상세 정보 크롤링 성공');
-    console.log(
-      '책 소개:',
-      bookDetail.description
-        ? `있음 (${bookDetail.description.length}자)`
-        : '없음',
-    );
-    console.log(
-      '줄거리:',
-      bookDetail.plot ? `있음 (${bookDetail.plot.length}자)` : '없음',
-    );
-    console.log(
-      '저자 소개:',
-      bookDetail.authorInfo
-        ? `있음 (${bookDetail.authorInfo.length}자)`
-        : '없음',
-    );
+    // 캐시 저장
+    await writeDetailCache('kr', url, bookDetail);
 
     res.json(bookDetail);
   } catch (err) {
@@ -250,8 +344,15 @@ app.get('/kr-book-detail', async (req, res) => {
   }
 });
 
+// 미국 베스트셀러
 app.get('/us-books', async (req, res) => {
   try {
+    const cachedData = await readCache('us');
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
+    console.log('🔄 미국 베스트셀러 크롤링 시작...');
     const url = 'https://www.amazon.com/best-sellers-books-Amazon/zgbs/books';
 
     const browser = await puppeteer.launch({
@@ -271,14 +372,12 @@ app.get('/us-books', async (req, res) => {
       const items = Array.from(document.querySelectorAll('div[data-asin]'));
 
       return items.slice(0, 20).map((el, idx) => {
-        // 제목
         const titleEl =
           el.querySelector('._cDEzb_p13n-sc-css-line-clamp-1_1Fn1y') ||
           el.querySelector('.p13n-sc-truncate') ||
           el.querySelector('div._cDEzb_p13n-sc-css-line-clamp-3_g3dy1');
         const title = titleEl ? titleEl.innerText.trim() : `Book ${idx + 1}`;
 
-        // 저자
         const authorEl =
           el.querySelector('._cDEzb_p13n-sc-css-line-clamp-1_EWgCb') ||
           el.querySelector('.a-size-small.a-link-child') ||
@@ -286,16 +385,12 @@ app.get('/us-books', async (req, res) => {
           el.querySelector('span.a-size-small');
         const author = authorEl ? authorEl.innerText.trim() : 'Unknown Author';
 
-        // 이미지
         const imgEl = el.querySelector('img');
         const image = imgEl ? imgEl.src : '';
 
-        // 링크
         const linkEl = el.querySelector('a');
         const href = linkEl ? linkEl.getAttribute('href') : '';
         const link = href ? 'https://www.amazon.com' + href : '';
-
-        console.log(`${idx + 1}. ${title} - ${author}`);
 
         return { title, author, image, link };
       });
@@ -303,21 +398,31 @@ app.get('/us-books', async (req, res) => {
 
     await browser.close();
     console.log(`✅ Amazon 크롤링 성공: ${books.length}권`);
-    res.json({ books });
+
+    const result = { books };
+    await writeCache('us', result);
+    res.json(result);
   } catch (err) {
-    console.error('❌ Amazon Puppeteer 크롤링 실패:', err);
+    console.error('❌ Amazon 크롤링 실패:', err);
     res.status(500).json({ error: 'US 크롤링 실패', message: err.message });
   }
 });
+
+// 미국 책 상세 정보
 app.get('/us-book-detail', async (req, res) => {
   try {
     const { url } = req.query;
-
     if (!url) {
       return res.status(400).json({ error: 'URL이 필요합니다' });
     }
 
-    console.log('📘 상세 정보 요청:', url);
+    // 캐시 확인
+    const cachedData = await readDetailCache('us', url);
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
+    console.log('📘 미국 책 상세 정보 크롤링:', url);
 
     const browser = await puppeteer.launch({
       headless: true,
@@ -341,7 +446,6 @@ app.get('/us-book-detail', async (req, res) => {
 
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 40000 });
 
-    // 스크롤
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight / 2);
     });
@@ -353,12 +457,8 @@ app.get('/us-book-detail', async (req, res) => {
     await new Promise(resolve => setTimeout(resolve, 3000));
 
     const bookDetail = await page.evaluate(() => {
-      console.log('=== 페이지 크롤링 시작 ===');
-
-      // ✅ 책 설명 (Book Description)
       let description = '';
 
-      // 1. expander 버튼 클릭 시도 (숨겨진 내용 펼치기)
       const expanderButtons = document.querySelectorAll(
         '[data-a-expander-name="book_description_expander"]',
       );
@@ -366,41 +466,33 @@ app.get('/us-book-detail', async (req, res) => {
         if (btn.click) btn.click();
       });
 
-      // 2. bookDescription_feature_div에서 찾기
       const bookDescDiv = document.querySelector(
         '#bookDescription_feature_div',
       );
       if (bookDescDiv) {
-        // expander 내용
         const expanderContent = bookDescDiv.querySelector(
           '.a-expander-content',
         );
         if (expanderContent && expanderContent.innerText.trim().length > 50) {
           description = expanderContent.innerText.trim();
-          console.log('✅ 책 설명 찾음 (expander)');
         }
 
-        // 일반 텍스트
         if (!description) {
           const spans = bookDescDiv.querySelectorAll('span');
           for (let span of spans) {
             if (span.innerText && span.innerText.trim().length > 50) {
               description = span.innerText.trim();
-              console.log('✅ 책 설명 찾음 (span)');
               break;
             }
           }
         }
       }
 
-      // ✅ 저자 정보 (Editorial Reviews)
       let authorInfo = '';
-
       const editorialDiv = document.querySelector(
         '#editorialReviews_feature_div',
       );
       if (editorialDiv) {
-        // a-section a-spacing-small a-padding-small 찾기
         const sections = editorialDiv.querySelectorAll(
           '.a-section.a-spacing-small.a-padding-small',
         );
@@ -408,28 +500,22 @@ app.get('/us-book-detail', async (req, res) => {
         for (let section of sections) {
           const text = section.innerText.trim();
           if (text.length > 100) {
-            // 충분히 긴 텍스트만
             authorInfo = text;
-            console.log('✅ 저자 정보 찾음 (editorial reviews)');
             break;
           }
         }
 
-        // 못 찾았으면 전체 div에서
         if (!authorInfo) {
           const text = editorialDiv.innerText.trim();
           if (text.length > 100) {
             authorInfo = text;
-            console.log('✅ 저자 정보 찾음 (전체 editorial div)');
           }
         }
       }
 
-      // ✅ 출판 정보
       let publisher = '';
       let publishDate = '';
 
-      // detailBullets에서 찾기
       const detailBullets = document.querySelectorAll(
         '#detailBullets_feature_div li, ' +
           '#detailBulletsWrapper_feature_div li, ' +
@@ -452,11 +538,6 @@ app.get('/us-book-detail', async (req, res) => {
         }
       });
 
-      console.log('=== 크롤링 결과 ===');
-      console.log('책 설명:', description ? `${description.length}자` : '없음');
-      console.log('저자 정보:', authorInfo ? `${authorInfo.length}자` : '없음');
-      console.log('출판사:', publisher || '없음');
-
       return {
         description,
         authorInfo,
@@ -467,19 +548,8 @@ app.get('/us-book-detail', async (req, res) => {
 
     await browser.close();
 
-    console.log('✅ 미국 책 상세 정보 크롤링 성공');
-    console.log(
-      '줄거리:',
-      bookDetail.description
-        ? `있음 (${bookDetail.description.length}자)`
-        : '없음',
-    );
-    console.log(
-      '저자 정보:',
-      bookDetail.authorInfo
-        ? `있음 (${bookDetail.authorInfo.length}자)`
-        : '없음',
-    );
+    // 캐시 저장
+    await writeDetailCache('us', url, bookDetail);
 
     res.json(bookDetail);
   } catch (err) {
@@ -491,8 +561,15 @@ app.get('/us-book-detail', async (req, res) => {
   }
 });
 
+// 일본 베스트셀러
 app.get('/jp-books', async (req, res) => {
   try {
+    const cachedData = await readCache('jp');
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
+    console.log('🔄 일본 베스트셀러 크롤링 시작...');
     const url =
       'https://www.kinokuniya.co.jp/disp/CKnRankingPageCList.jsp?dispNo=107002001001&vTp=w';
 
@@ -516,10 +593,8 @@ app.get('/jp-books', async (req, res) => {
       const validBooks = [];
 
       items.slice(0, 20).forEach((el, idx) => {
-        // 제목 찾기
         let title = '';
 
-        // 링크 텍스트 우선
         const linkEl =
           el.querySelector('a[href*="dsg"]') ||
           el.querySelector('a[href*="product"]');
@@ -527,7 +602,6 @@ app.get('/jp-books', async (req, res) => {
           title = linkEl.innerText.trim() || linkEl.textContent.trim();
         }
 
-        // 후보 클래스/태그
         if (!title) {
           const titleElements = [
             el.querySelector('.booksname'),
@@ -546,7 +620,6 @@ app.get('/jp-books', async (req, res) => {
           }
         }
 
-        // 이미지 alt/title
         if (!title) {
           const imgEl = el.querySelector('img');
           if (imgEl) title = imgEl.alt || imgEl.title || `Book ${idx + 1}`;
@@ -554,7 +627,6 @@ app.get('/jp-books', async (req, res) => {
 
         title = title.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
 
-        // 저자 찾기
         let author = '著者不明';
         const authorEl = el.querySelector('.clearfix.ml10');
         const fallbackAuthorEl = Array.from(el.querySelectorAll('*')).find(e =>
@@ -563,8 +635,6 @@ app.get('/jp-books', async (req, res) => {
         if (authorEl) author = authorEl.innerText.trim();
         else if (fallbackAuthorEl) author = fallbackAuthorEl.innerText.trim();
 
-        // =========================
-        // 이미지 찾기
         const imgEl = allImages.find(img => {
           const src = img.src || img.getAttribute('data-src') || '';
           if (!src) return false;
@@ -590,14 +660,12 @@ app.get('/jp-books', async (req, res) => {
           )
             return false;
 
-          return el.contains(img); // img가 현재 책 div 안에 있는지 확인
+          return el.contains(img);
         });
         const image = imgEl
           ? imgEl.src || imgEl.getAttribute('data-src') || ''
           : '';
 
-        // 링크
-        // =========================
         const linkHref = el.querySelector('a')?.getAttribute('href') || '';
         const link = linkHref
           ? linkHref.startsWith('http')
@@ -605,7 +673,6 @@ app.get('/jp-books', async (req, res) => {
             : 'https://www.kinokuniya.co.jp' + linkHref
           : '';
 
-        // validBooks에 추가
         validBooks.push({ title, author, image, link });
       });
 
@@ -614,23 +681,31 @@ app.get('/jp-books', async (req, res) => {
 
     await browser.close();
     console.log(`✅ 일본 베스트셀러 ${books.length}권 크롤링 성공`);
-    if (books.length > 0) console.log('첫 번째 책:', books[0]);
-    res.json({ books });
+
+    const result = { books };
+    await writeCache('jp', result);
+    res.json(result);
   } catch (err) {
     console.error('❌ Puppeteer JP 크롤링 실패:', err);
     res.status(500).json({ error: 'JP 크롤링 실패', message: err.message });
   }
 });
-// 📘 일본 책 상세 정보 크롤링
+
+// 일본 책 상세 정보
 app.get('/jp-book-detail', async (req, res) => {
   try {
     const { url } = req.query;
-
     if (!url) {
       return res.status(400).json({ error: 'URL이 필요합니다' });
     }
 
-    console.log('📘 일본 책 상세 정보 요청:', url);
+    // 캐시 확인
+    const cachedData = await readDetailCache('jp', url);
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
+    console.log('📘 일본 책 상세 정보 크롤링:', url);
 
     const browser = await puppeteer.launch({
       headless: true,
@@ -645,54 +720,39 @@ app.get('/jp-book-detail', async (req, res) => {
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
     await new Promise(resolve => setTimeout(resolve, 3000));
 
-    // 스크롤
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight / 2);
     });
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     const bookDetail = await page.evaluate(() => {
-      console.log('=== 기노쿠니야 상세 페이지 크롤링 시작 ===');
-
-      // ✅ 책 정보 (description)
       let description = '';
       const descEl = document.querySelector('p[itemprop="description"]');
       if (descEl) {
         description = descEl.innerText.trim();
-        console.log('✅ 책 정보 찾음:', description.substring(0, 100));
       }
 
-      // ✅ 내용 설명 (career_box의 첫 번째 섹션)
       let plot = '';
       const careerBox = document.querySelector('.career_box');
       if (careerBox) {
-        // career_box 안의 모든 <p> 태그 수집
         const paragraphs = careerBox.querySelectorAll('p');
         const textParts = [];
 
         for (let p of paragraphs) {
           const text = p.innerText.trim();
-          // itemprop="description"은 제외 (이미 위에서 처리)
           if (text && !p.hasAttribute('itemprop')) {
             textParts.push(text);
           }
         }
 
-        // 상위 몇 개의 문단을 내용 설명으로
         if (textParts.length > 0) {
-          // 첫 3개 문단 정도를 내용 설명으로 간주
           plot = textParts.slice(0, 3).join('\n\n');
-          console.log('✅ 내용 설명 찾음:', plot.substring(0, 100));
         }
       }
 
-      // ✅ 저자 소개 (career_box의 하단 - "저자 등 소개" 부분)
       let authorInfo = '';
       if (careerBox) {
-        // <h3> 태그나 특정 텍스트로 저자 소개 구분
         const allText = careerBox.innerText;
-
-        // "저자", "著者", "作者" 등의 키워드가 있는 부분 찾기
         const lines = allText.split('\n');
         let foundAuthorSection = false;
         const authorLines = [];
@@ -701,7 +761,6 @@ app.get('/jp-book-detail', async (req, res) => {
           line = line.trim();
           if (!line) continue;
 
-          // 저자 섹션 시작 감지
           if (
             line.includes('저자') ||
             line.includes('著者') ||
@@ -713,9 +772,7 @@ app.get('/jp-book-detail', async (req, res) => {
             continue;
           }
 
-          // 저자 섹션에 있으면 수집
           if (foundAuthorSection) {
-            // 다른 섹션 시작하면 중단
             if (
               line.includes('내용 설명') ||
               line.includes('内容説明') ||
@@ -730,15 +787,12 @@ app.get('/jp-book-detail', async (req, res) => {
 
         if (authorLines.length > 0) {
           authorInfo = authorLines.join('\n');
-          console.log('✅ 저자 소개 찾음:', authorInfo.substring(0, 100));
         }
       }
 
-      // 출판 정보
       let publisher = '';
       let publishDate = '';
 
-      // 테이블에서 출판 정보 찾기
       const tables = document.querySelectorAll('table');
       tables.forEach(table => {
         const rows = table.querySelectorAll('tr');
@@ -763,11 +817,6 @@ app.get('/jp-book-detail', async (req, res) => {
         });
       });
 
-      console.log('=== 크롤링 결과 ===');
-      console.log('책 정보:', description ? `${description.length}자` : '없음');
-      console.log('내용 설명:', plot ? `${plot.length}자` : '없음');
-      console.log('저자 소개:', authorInfo ? `${authorInfo.length}자` : '없음');
-
       return {
         description,
         plot,
@@ -779,23 +828,8 @@ app.get('/jp-book-detail', async (req, res) => {
 
     await browser.close();
 
-    console.log('✅ 일본 책 상세 정보 크롤링 성공');
-    console.log(
-      '책 정보:',
-      bookDetail.description
-        ? `있음 (${bookDetail.description.length}자)`
-        : '없음',
-    );
-    console.log(
-      '내용 설명:',
-      bookDetail.plot ? `있음 (${bookDetail.plot.length}자)` : '없음',
-    );
-    console.log(
-      '저자 소개:',
-      bookDetail.authorInfo
-        ? `있음 (${bookDetail.authorInfo.length}자)`
-        : '없음',
-    );
+    // 캐시 저장
+    await writeDetailCache('jp', url, bookDetail);
 
     res.json(bookDetail);
   } catch (err) {
@@ -807,6 +841,114 @@ app.get('/jp-book-detail', async (req, res) => {
   }
 });
 
+// 캐시 상태 확인 엔드포인트 (선택사항)
+app.get('/cache-status', async (req, res) => {
+  try {
+    const status = {
+      lists: {},
+      details: {
+        kr: 0,
+        us: 0,
+        jp: 0,
+      },
+    };
+
+    // 베스트셀러 목록 캐시 확인
+    for (const [country, filePath] of Object.entries(CACHE_FILES)) {
+      try {
+        const data = await fs.readFile(filePath, 'utf-8');
+        const cache = JSON.parse(data);
+        const age = Date.now() - cache.timestamp;
+        const daysOld = Math.floor(age / (24 * 60 * 60 * 1000));
+        const isValid = age < CACHE_DURATION;
+
+        status.lists[country] = {
+          exists: true,
+          timestamp: new Date(cache.timestamp).toLocaleString('ko-KR'),
+          daysOld,
+          isValid,
+          booksCount: cache.data?.books?.length || 0,
+        };
+      } catch {
+        status.lists[country] = {
+          exists: false,
+        };
+      }
+    }
+
+    // 상세 정보 캐시 개수 확인
+    try {
+      const files = await fs.readdir(DETAIL_CACHE_DIR);
+      status.details.kr = files.filter(f => f.startsWith('kr_')).length;
+      status.details.us = files.filter(f => f.startsWith('us_')).length;
+      status.details.jp = files.filter(f => f.startsWith('jp_')).length;
+      status.details.total = files.length;
+    } catch (err) {
+      console.log('상세 정보 캐시 디렉토리 없음');
+    }
+
+    res.json(status);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: '캐시 상태 확인 실패', message: err.message });
+  }
+});
+
+// 캐시 강제 삭제 엔드포인트 (선택사항)
+app.delete('/cache/:country', async (req, res) => {
+  try {
+    const { country } = req.params;
+    const cacheFile = CACHE_FILES[country];
+
+    if (!cacheFile) {
+      return res.status(400).json({ error: '잘못된 국가 코드' });
+    }
+
+    // 베스트셀러 목록 캐시 삭제
+    try {
+      await fs.unlink(cacheFile);
+      console.log(`🗑️ ${country.toUpperCase()} 목록 캐시 삭제 완료`);
+    } catch (err) {
+      console.log(`목록 캐시 파일 없음: ${country}`);
+    }
+
+    // 해당 국가의 상세 정보 캐시 삭제
+    try {
+      const files = await fs.readdir(DETAIL_CACHE_DIR);
+      const countryFiles = files.filter(f => f.startsWith(`${country}_`));
+
+      for (const file of countryFiles) {
+        await fs.unlink(path.join(DETAIL_CACHE_DIR, file));
+      }
+
+      console.log(
+        `🗑️ ${country.toUpperCase()} 상세 정보 캐시 ${
+          countryFiles.length
+        }개 삭제 완료`,
+      );
+
+      res.json({
+        message: `${country.toUpperCase()} 캐시가 삭제되었습니다`,
+        deletedDetails: countryFiles.length,
+      });
+    } catch (err) {
+      console.log(`상세 정보 캐시 파일 없음: ${country}`);
+      res.json({
+        message: `${country.toUpperCase()} 목록 캐시가 삭제되었습니다`,
+        deletedDetails: 0,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ error: '캐시 삭제 실패', message: err.message });
+  }
+});
+
+app.listen(4000, () => {
+  console.log('🚀 Server running on port 4000');
+  console.log('📦 캐시 기능 활성화 (유효기간: 7일)');
+  console.log('📂 캐시 저장 경로:', CACHE_DIR);
+});
 app.listen(4000, () => console.log(`🚀 JP Server running on port 4000`));
 app.listen(4000, () => console.log('🚀 Amazon Server running on port 4000'));
 app.listen(4000, () => console.log('🚀 Server running on port 4000'));

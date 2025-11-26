@@ -98,7 +98,7 @@ export default function JpMain({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000', padding: 20 },
+  container: { flex: 1, backgroundColor: '#111', padding: 20 },
   headerButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -1,0 +1,147 @@
+{
+  "timestamp": 1764119952000,
+  "data": {
+    "books": [
+      {
+        "title": "나나 올리브에게",
+        "author": "루리 (지은이)",
+        "publisher": "문학동네",
+        "image": "https://image.aladin.co.kr/product/37789/25/cover200/k392033660_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=377892566"
+      },
+      {
+        "title": "괴테는 모든 것을 말했다",
+        "author": "스즈키 유이 (지은이), 이지수 (옮긴이)",
+        "publisher": "리프",
+        "image": "https://image.aladin.co.kr/product/37676/59/cover200/k212032349_2.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=376765918"
+      },
+      {
+        "title": "이재명 대통령과 함께 365 일력",
+        "author": "김준혁 (엮은이), 이재명 대통령 말과 글",
+        "publisher": "생각의힘",
+        "image": "https://image.aladin.co.kr/product/37805/20/cover200/k082033397_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=378052034"
+      },
+      {
+        "title": "탁! 깨달음의 대화",
+        "author": "법륜 (지은이), 한차연 (그림)",
+        "publisher": "정토출판",
+        "image": "https://image.aladin.co.kr/product/37804/72/cover200/k292033395_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=378047231"
+      },
+      {
+        "title": "트렌드 코리아 2026",
+        "author": "김난도, 전미영, 최지혜, 권정윤, 한다혜, 이혜원, 이수진, 서유현, 전다현, 이준영, 이향은, 김나은 (지은이)",
+        "publisher": "미래의창",
+        "image": "https://image.aladin.co.kr/product/37144/79/cover200/k442031479_3.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=371447935"
+      },
+      {
+        "title": "사카모토 홀리데이즈 2",
+        "author": "오오카와 테츠 (지은이), 스즈키 유우토 (원작)",
+        "publisher": "대원씨아이(만화)",
+        "image": "https://image.aladin.co.kr/product/37835/39/cover200/k202033695_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=378353900"
+      },
+      {
+        "title": "어스탐 경의 임사전언",
+        "author": "이영도 (지은이)",
+        "publisher": "황금가지",
+        "image": "https://image.aladin.co.kr/product/37684/42/cover200/k392032448_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=376844276"
+      },
+      {
+        "title": "혼모노",
+        "author": "성해나 (지은이)",
+        "publisher": "창비",
+        "image": "https://image.aladin.co.kr/product/36101/66/cover200/893643974x_2.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=361016676"
+      },
+      {
+        "title": "카구라바치 8 (더블특전판)",
+        "author": "호카조노 타케루 (지은이)",
+        "publisher": "대원씨아이(만화)",
+        "image": "https://image.aladin.co.kr/product/37805/11/cover200/k822033396_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=378051111"
+      },
+      {
+        "title": "2026 임용 면접레시피 평가원 지역 - 전2권",
+        "author": "류은진, 양왕경, 이광한, 이지혜 (지은이)",
+        "publisher": "위더스",
+        "image": "https://image.aladin.co.kr/product/37604/87/cover200/k212032832_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=376048720"
+      },
+      {
+        "title": "극락가 5 (더블특전판)",
+        "author": "사노 유토 (지은이)",
+        "publisher": "대원씨아이(만화)",
+        "image": "https://image.aladin.co.kr/product/37876/24/cover200/k792033804_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=378762449"
+      },
+      {
+        "title": "에그박사 17",
+        "author": "에그박사 (원작), 박송이 (글), 홍종현 (그림), 김보숙 (감수)",
+        "publisher": "미래엔아이세움",
+        "image": "https://image.aladin.co.kr/product/37822/25/cover200/k452033590_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=378222572"
+      },
+      {
+        "title": "절창",
+        "author": "구병모 (지은이)",
+        "publisher": "문학동네",
+        "image": "https://image.aladin.co.kr/product/37172/36/cover200/k662031678_2.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=371723601"
+      },
+      {
+        "title": "지금 나를 위해 해야 하는 것들",
+        "author": "김연경 (지은이)",
+        "publisher": "가연",
+        "image": "https://image.aladin.co.kr/product/37875/98/cover200/8968971382_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=378759896"
+      },
+      {
+        "title": "위버멘쉬",
+        "author": "프리드리히 니체 (지은이), 어나니머스 (옮긴이)",
+        "publisher": "RISE(떠오름)",
+        "image": "https://image.aladin.co.kr/product/35902/54/cover200/k962037084_2.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=359025448"
+      },
+      {
+        "title": "박곰희 연금 부자 수업",
+        "author": "박곰희 (지은이)",
+        "publisher": "인플루엔셜(주)",
+        "image": "https://image.aladin.co.kr/product/36661/52/cover200/k972030181_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=366615290"
+      },
+      {
+        "title": "이상한 문장 그만 쓰는 법",
+        "author": "이주윤 (지은이)",
+        "publisher": "빅피시",
+        "image": "https://image.aladin.co.kr/product/37593/71/cover200/k602032732_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=375937138"
+      },
+      {
+        "title": "모순",
+        "author": "양귀자 (지은이)",
+        "publisher": "쓰다",
+        "image": "https://image.aladin.co.kr/product/2584/37/cover200/8998441012_3.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=25843736"
+      },
+      {
+        "title": "대형주 추세추종 투자법칙",
+        "author": "이종호(전황) (지은이)",
+        "publisher": "사피엔테스",
+        "image": "https://image.aladin.co.kr/product/37496/61/cover200/k792032615_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=374966100"
+      },
+      {
+        "title": "2026 사이다 면접",
+        "author": "이지수, 구영모 (지은이)",
+        "publisher": "박문각",
+        "image": "https://image.aladin.co.kr/product/37555/57/cover200/k402032428_1.jpg",
+        "link": "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=375555729"
+      }
+    ]
+  }
+}

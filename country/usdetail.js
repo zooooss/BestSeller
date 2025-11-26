@@ -134,7 +134,7 @@ export default function UsDetail({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000', padding: 20 },
+  container: { flex: 1, backgroundColor: '#111', padding: 20 },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',

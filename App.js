@@ -69,18 +69,19 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#F8F9FA',
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
     fontSize: 26,
-    color: '#fff',
-    marginBottom: 50,
+    color: '#4e6bb5ff',
+    marginBottom: 25,
+    marginTop: 25,
     fontWeight: 'bold',
   },
   button: {
-    backgroundColor: '#ff8c00',
+    backgroundColor: '#4e6bb5ff',
     paddingVertical: 15,
     paddingHorizontal: 50,
     borderRadius: 12,
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   countryButton: {
-    backgroundColor: '#ffa500', // 오렌지 색
+    backgroundColor: '#4e6bb5ff', // 오렌지 색
     paddingVertical: 12,
     paddingHorizontal: 40,
     borderRadius: 10,
