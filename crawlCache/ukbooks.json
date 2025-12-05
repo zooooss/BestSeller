@@ -1,0 +1,127 @@
+{
+  "timestamp": 1764897855230,
+  "data": {
+    "books": [
+      {
+        "title": "The Impossible Fortune",
+        "author": "Richard Osman",
+        "image": "https://cdn.waterstones.com/bookjackets/medium/9780/2417/9780241743980.jpg",
+        "link": "https://www.waterstones.com/book/the-impossible-fortune/richard-osman/9780241743980"
+      },
+      {
+        "title": "Always Remember",
+        "author": "Charlie Mackesy",
+        "image": "https://cdn.waterstones.com/bookjackets/medium/9781/5291/9781529108446.jpg",
+        "link": "https://www.waterstones.com/book/always-remember/charlie-mackesy/9781529108446"
+      },
+      {
+        "title": "Diary of a Wimpy Kid 20",
+        "author": "Jeff Kinney",
+        "image": "https://cdn.waterstones.com/bookjackets/medium/9780/2417/9780241745168.jpg",
+        "link": "https://www.waterstones.com/book/diary-of-a-wimpy-kid-20/jeff-kinney/jeff-kinney/9780241745168"
+      },
+      {
+        "title": "Needoh Nice Ice Baby…",
+        "author": "Bigjigs Toys Ltd",
+        "image": "https://cdn.waterstones.com/override/v1/medium/0019/6495/0019649508785.jpg",
+        "link": "https://www.waterstones.com/product/needoh-nice-ice-baby-cube/0019649508785"
+      },
+      {
+        "title": "Private Eye Annual 2025",
+        "author": "Ian Hislop",
+        "image": "https://cdn.waterstones.com/bookjackets/medium/9781/9017/9781901784756.jpg",
+        "link": "https://www.waterstones.com/book/private-eye-annual-2025/ian-hislop/9781901784756"
+      },
+      {
+        "title": "Mary 90",
+        "author": "Mary Berry",
+        "image": "https://cdn.waterstones.com/bookjackets/medium/9781/7859/9781785949661.jpg",
+        "link": "https://www.waterstones.com/book/mary-90/mary-berry/9781785949661"
+      },
+      {
+        "title": "The Secret of Secrets",
+        "author": "Dan Brown",
+        "image": "https://cdn.waterstones.com/override/v1/medium/9781/7876/9781787634558.jpg",
+        "link": "https://www.waterstones.com/book/the-secret-of-secrets/dan-brown/9781787634558"
+      },
+      {
+        "title": "Flesh",
+        "author": "David Szalay",
+        "image": "https://cdn.waterstones.com/override/v1/medium/9780/2240/9780224099783.jpg",
+        "link": "https://www.waterstones.com/book/flesh/david-szalay/9780224099783"
+      },
+      {
+        "title": "The Artist",
+        "author": "Lucy Steeds",
+        "image": "https://cdn.waterstones.com/override/v2/medium/9781/3998/9781399835572.jpg",
+        "link": "https://www.waterstones.com/book/the-artist/lucy-steeds/9781399835572"
+      },
+      {
+        "title": "Guinness World…",
+        "author": "Guinness World Records Limited",
+        "image": "https://cdn.waterstones.com/bookjackets/medium/9781/9134/9781913484811.jpg",
+        "link": "https://www.waterstones.com/book/guinness-world-records-2026/9781913484811"
+      },
+      {
+        "title": "The Safekeep",
+        "author": "Yael van der Wouden",
+        "image": "https://cdn.waterstones.com/bookjackets/medium/9780/2419/9780241999776.jpg",
+        "link": "https://www.waterstones.com/book/the-safekeep/yael-van-der-wouden/9780241999776"
+      },
+      {
+        "title": "Always Remember",
+        "author": "Charlie Mackesy",
+        "image": "https://cdn.waterstones.com/override/v4/medium/2928/3773/2928377337124.jpg",
+        "link": "https://www.waterstones.com/book/always-remember/charlie-mackesy/2928377337124"
+      },
+      {
+        "title": "Santa & Son",
+        "author": "David Walliams",
+        "image": "https://cdn.waterstones.com/override/v2/medium/9780/0085/9780008587567.jpg",
+        "link": "https://www.waterstones.com/book/santa-and-son/david-walliams/adam-stower/9780008587567"
+      },
+      {
+        "title": "The Cafe at the Edge of…",
+        "author": "Mikey Please",
+        "image": "https://cdn.waterstones.com/override/v2/medium/9780/0086/9780008639013.jpg",
+        "link": "https://www.waterstones.com/book/the-cafe-at-the-edge-of-the-woods/mikey-please/9780008639013"
+      },
+      {
+        "title": "Eat Yourself Healthy",
+        "author": "Jamie Oliver",
+        "image": "https://cdn.waterstones.com/override/v2/medium/9780/2416/9780241657836.jpg",
+        "link": "https://www.waterstones.com/book/eat-yourself-healthy/jamie-oliver/9780241657836"
+      },
+      {
+        "title": "Rites of the Starling",
+        "author": "Devney Perry",
+        "image": "https://cdn.waterstones.com/override/v2/medium/2928/3773/2928377365592.jpg",
+        "link": "https://www.waterstones.com/book/rites-of-the-starling/devney-perry/2928377365592"
+      },
+      {
+        "title": "The Land in Winter",
+        "author": "Andrew Miller",
+        "image": "https://cdn.waterstones.com/bookjackets/medium/9781/5293/9781529354300.jpg",
+        "link": "https://www.waterstones.com/book/the-land-in-winter/andrew-miller/9781529354300"
+      },
+      {
+        "title": "Nobody's Girl",
+        "author": "Virginia Roberts Giuffre",
+        "image": "https://cdn.waterstones.com/bookjackets/medium/9781/5299/9781529985245.jpg",
+        "link": "https://www.waterstones.com/book/nobodys-girl/virginia-roberts-giuffre/9781529985245"
+      },
+      {
+        "title": "Dog Man 14: Big Jim…",
+        "author": "Dav Pilkey",
+        "image": "https://cdn.waterstones.com/override/v2/medium/9780/7023/9780702345340.jpg",
+        "link": "https://www.waterstones.com/book/dog-man-14-big-jim-believes/dav-pilkey/9780702345340"
+      },
+      {
+        "title": "Cat Erasable Pen",
+        "author": "Legami",
+        "image": "https://cdn.waterstones.com/override/v2/medium/8051/7393/8051739306873.jpg",
+        "link": "https://www.waterstones.com/product/cat-erasable-pen/8051739306873"
+      }
+    ]
+  }
+}

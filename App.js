@@ -5,9 +5,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import KrMain from './country/krmain';
 import UsMain from './country/usmain';
 import JpMain from './country/jpmain';
+import UkMain from './country/ukmain';
 import JpDetail from './country/jpdetail';
 import KrDetail from './country/krdetail';
 import UsDetail from './country/usdetail';
+import UkDetail from './country/usdetail';
 import { BookmarkProvider } from './BookmarkContext';
 import BookmarkScreen from './Bookmark';
 //앰플리튜드 등록
@@ -39,6 +41,12 @@ function HomeScreen({ navigation }) {
     amplitude.track('Japan_Clicked');
     navigation.navigate('JpMain');
   };
+
+  // 영국 버튼 클릭 핸들러
+  const handleUKClick = () => {
+    amplitude.track('UK_Clicked');
+    navigation.navigate('UkMain');
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -59,6 +67,10 @@ function HomeScreen({ navigation }) {
 
       <TouchableOpacity style={styles.button} onPress={handleJapanClick}>
         <Text style={styles.text}>🇯🇵 일본 베스트셀러</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={handleUKClick}>
+        <Text style={styles.text}>🇬🇧 영국 베스트셀러</Text>
       </TouchableOpacity>
     </View>
   );
@@ -92,6 +104,8 @@ export default function App() {
           <Stack.Screen name="JpMain" component={JpMain} />
           <Stack.Screen name="JpDetail" component={JpDetail} />
           <Stack.Screen name="Bookmark" component={BookmarkScreen} />
+          <Stack.Screen name="UkMain" component={UkMain} />
+          <Stack.Screen name="UkDetail" component={UkDetail} />
         </Stack.Navigator>
       </NavigationContainer>
     </BookmarkProvider>

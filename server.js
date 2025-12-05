@@ -20,6 +20,7 @@ const CACHE_FILES = {
   kr: path.join(CACHE_DIR, 'krbooks.json'),
   us: path.join(CACHE_DIR, 'usbooks.json'),
   jp: path.join(CACHE_DIR, 'jpbooks.json'),
+  uk: path.join(CACHE_DIR, 'ukbooks.json'),
 };
 // 상세 정보 캐시 디렉토리
 const DETAIL_CACHE_DIR = path.join(CACHE_DIR, 'details');
@@ -840,107 +841,382 @@ app.get('/jp-book-detail', async (req, res) => {
     });
   }
 });
-
-// 캐시 상태 확인 엔드포인트 (선택사항)
-app.get('/cache-status', async (req, res) => {
+// 영국 베스트셀러
+app.get('/uk-books', async (req, res) => {
   try {
-    const status = {
-      lists: {},
-      details: {
-        kr: 0,
-        us: 0,
-        jp: 0,
-      },
-    };
-
-    // 베스트셀러 목록 캐시 확인
-    for (const [country, filePath] of Object.entries(CACHE_FILES)) {
-      try {
-        const data = await fs.readFile(filePath, 'utf-8');
-        const cache = JSON.parse(data);
-        const age = Date.now() - cache.timestamp;
-        const daysOld = Math.floor(age / (24 * 60 * 60 * 1000));
-        const isValid = age < CACHE_DURATION;
-
-        status.lists[country] = {
-          exists: true,
-          timestamp: new Date(cache.timestamp).toLocaleString('ko-KR'),
-          daysOld,
-          isValid,
-          booksCount: cache.data?.books?.length || 0,
-        };
-      } catch {
-        status.lists[country] = {
-          exists: false,
-        };
-      }
+    const cachedData = await readCache('uk');
+    if (cachedData) {
+      return res.json(cachedData);
     }
 
-    // 상세 정보 캐시 개수 확인
+    console.log('🔄 영국 베스트셀러 크롤링 시작...');
+    const url = 'https://www.waterstones.com/books/bestsellers';
+
+    const browser = await puppeteer.launch({
+      headless: 'new', // 'new' headless 모드 사용
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-blink-features=AutomationControlled',
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins,site-per-process',
+        '--window-size=1920,1080',
+      ],
+    });
+    const page = await browser.newPage();
+
+    // 봇 감지 우회
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => undefined,
+      });
+
+      window.navigator.chrome = {
+        runtime: {},
+      };
+
+      Object.defineProperty(navigator, 'plugins', {
+        get: () => [1, 2, 3, 4, 5],
+      });
+
+      Object.defineProperty(navigator, 'languages', {
+        get: () => ['en-GB', 'en-US', 'en'],
+      });
+    });
+
+    // 랜덤 User Agent
+    const userAgents = [
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0',
+    ];
+    await page.setUserAgent(
+      userAgents[Math.floor(Math.random() * userAgents.length)],
+    );
+
+    // 뷰포트 설정
+    await page.setViewport({ width: 1920, height: 1080 });
+
+    // 추가 헤더 설정
+    await page.setExtraHTTPHeaders({
+      'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+      Accept:
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+      'Accept-Encoding': 'gzip, deflate, br',
+      Connection: 'keep-alive',
+      'Upgrade-Insecure-Requests': '1',
+    });
+
     try {
-      const files = await fs.readdir(DETAIL_CACHE_DIR);
-      status.details.kr = files.filter(f => f.startsWith('kr_')).length;
-      status.details.us = files.filter(f => f.startsWith('us_')).length;
-      status.details.jp = files.filter(f => f.startsWith('jp_')).length;
-      status.details.total = files.length;
-    } catch (err) {
-      console.log('상세 정보 캐시 디렉토리 없음');
-    }
+      await page.goto(url, {
+        waitUntil: 'domcontentloaded',
+        timeout: 40000,
+      });
 
-    res.json(status);
+      // 페이지 로딩 대기
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      // lazy loading 이미지를 강제로 로드
+      await page.evaluate(() => {
+        // 모든 이미지를 viewport에 노출시키기
+        const images = document.querySelectorAll(
+          'img[data-src], img[data-lazy-src], img[loading="lazy"]',
+        );
+        images.forEach(img => {
+          // data-src를 src로 복사
+          if (img.getAttribute('data-src')) {
+            img.src = img.getAttribute('data-src');
+          }
+          if (img.getAttribute('data-lazy-src')) {
+            img.src = img.getAttribute('data-lazy-src');
+          }
+          // lazy loading 제거
+          img.removeAttribute('loading');
+        });
+      });
+
+      // 천천히 스크롤하여 모든 이미지 로드
+      for (let i = 0; i <= 10; i++) {
+        await page.evaluate(step => {
+          window.scrollTo(0, (document.body.scrollHeight / 10) * step);
+        }, i);
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+
+      // 맨 위로 스크롤
+      await page.evaluate(() => {
+        window.scrollTo(0, 0);
+      });
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // 책 데이터 추출 (여러 셀렉터 시도)
+      const books = await page.evaluate(() => {
+        const items = [];
+
+        // 가능한 셀렉터들
+        const selectors = [
+          '.book-item',
+          '.search-result-item',
+          '[data-book]',
+          '.book-card',
+          'article.book',
+          '.product-item',
+          'div[data-isbn]',
+        ];
+
+        let elements = [];
+        for (const selector of selectors) {
+          elements = Array.from(document.querySelectorAll(selector));
+          if (elements.length > 0) {
+            console.log(
+              `Found ${elements.length} books with selector: ${selector}`,
+            );
+            break;
+          }
+        }
+
+        // 데이터 추출
+        return elements.slice(0, 20).map((el, idx) => {
+          // 제목 추출
+          let title = '';
+          const titleSelectors = [
+            '.title',
+            '.book-title',
+            'h3',
+            'h2',
+            '[class*="title"]',
+            'a[title]',
+          ];
+          for (const sel of titleSelectors) {
+            const titleEl = el.querySelector(sel);
+            if (titleEl) {
+              title =
+                titleEl.innerText?.trim() ||
+                titleEl.getAttribute('title') ||
+                '';
+              if (title) break;
+            }
+          }
+          if (!title) title = `Book ${idx + 1}`;
+
+          // 저자 추출
+          let author = '';
+          const authorSelectors = [
+            '.author',
+            '.book-author',
+            '[class*="author"]',
+            '.contributor',
+            'a[href*="author"]',
+          ];
+          for (const sel of authorSelectors) {
+            const authorEl = el.querySelector(sel);
+            if (authorEl) {
+              author = authorEl.innerText?.trim() || '';
+              if (author) break;
+            }
+          }
+          if (!author) author = 'Unknown Author';
+
+          // 이미지 추출 (여러 속성 확인)
+          let image = '';
+          const imgEl = el.querySelector('img');
+          if (imgEl) {
+            image =
+              imgEl.getAttribute('data-src') ||
+              imgEl.getAttribute('data-lazy-src') ||
+              imgEl.getAttribute('data-original') ||
+              imgEl.src ||
+              imgEl.getAttribute('srcset')?.split(' ')[0] ||
+              '';
+
+            // cover404.png는 제외
+            if (image && image.includes('cover404.png')) {
+              image = '';
+            }
+
+            // 상대 경로면 절대 경로로 변환
+            if (
+              image &&
+              !image.startsWith('http') &&
+              !image.startsWith('data:')
+            ) {
+              image = `https://www.waterstones.com${image}`;
+            }
+          }
+
+          // 링크 추출
+          let link = '';
+          const linkEl = el.querySelector('a[href]');
+          if (linkEl) {
+            const href = linkEl.getAttribute('href');
+            if (href) {
+              link = href.startsWith('http')
+                ? href
+                : `https://www.waterstones.com${href}`;
+            }
+          }
+
+          return { title, author, image, link };
+        });
+      });
+
+      await browser.close();
+
+      if (books.length === 0) {
+        console.log('⚠️ 책을 찾지 못했습니다. 페이지 구조를 확인하세요.');
+        // 페이지 HTML을 로깅하여 디버깅
+        const bodyHTML = await page.evaluate(() => document.body.innerHTML);
+        console.log('페이지 일부:', bodyHTML.substring(0, 500));
+      }
+
+      console.log(`✅ Waterstones 크롤링 성공: ${books.length}권`);
+
+      const result = { books };
+      await writeCache('uk', result);
+      res.json(result);
+    } catch (navError) {
+      await browser.close();
+      throw navError;
+    }
   } catch (err) {
-    res
-      .status(500)
-      .json({ error: '캐시 상태 확인 실패', message: err.message });
+    console.error('❌ Waterstones 크롤링 실패:', err);
+    res.status(500).json({ error: 'UK 크롤링 실패', message: err.message });
   }
 });
 
-// 캐시 강제 삭제 엔드포인트
-app.delete('/cache/:country', async (req, res) => {
+// 영국 책 상세 정보
+app.get('/uk-book-detail', async (req, res) => {
   try {
-    const { country } = req.params;
-    const cacheFile = CACHE_FILES[country];
-
-    if (!cacheFile) {
-      return res.status(400).json({ error: '잘못된 국가 코드' });
+    const { url } = req.query;
+    if (!url) {
+      return res.status(400).json({ error: 'URL이 필요합니다' });
     }
 
-    // 베스트셀러 목록 캐시 삭제
-    try {
-      await fs.unlink(cacheFile);
-      console.log(`🗑️ ${country.toUpperCase()} 목록 캐시 삭제 완료`);
-    } catch (err) {
-      console.log(`목록 캐시 파일 없음: ${country}`);
+    const cachedData = await readDetailCache('uk', url);
+    if (cachedData) {
+      return res.json(cachedData);
     }
 
-    // 해당 국가의 상세 정보 캐시 삭제
-    try {
-      const files = await fs.readdir(DETAIL_CACHE_DIR);
-      const countryFiles = files.filter(f => f.startsWith(`${country}_`));
+    console.log('📘 영국 책 상세 정보 크롤링:', url);
 
-      for (const file of countryFiles) {
-        await fs.unlink(path.join(DETAIL_CACHE_DIR, file));
+    const browser = await puppeteer.launch({
+      headless: 'new',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-blink-features=AutomationControlled',
+        '--window-size=1920,1080',
+      ],
+    });
+    const page = await browser.newPage();
+
+    // 봇 감지 우회
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => undefined,
+      });
+
+      window.navigator.chrome = {
+        runtime: {},
+      };
+
+      Object.defineProperty(navigator, 'plugins', {
+        get: () => [1, 2, 3, 4, 5],
+      });
+    });
+
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    );
+
+    await page.setViewport({ width: 1920, height: 1080 });
+
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 40000 });
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    // 스크롤
+    await page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight / 2);
+    });
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    const bookDetail = await page.evaluate(() => {
+      let description = '';
+      let review = '';
+      let publisher = '';
+
+      // 책 설명/시놉시스 추출
+      const descSelectors = [
+        '[class*="book-description"]',
+        '[class*="synopsis"]',
+        '[class*="description"]',
+        '.book-information p',
+        'div[itemprop="description"]',
+      ];
+
+      for (const sel of descSelectors) {
+        const el = document.querySelector(sel);
+        if (el && el.innerText.trim().length > 50) {
+          description = el.innerText.trim();
+          break;
+        }
       }
 
-      console.log(
-        `🗑️ ${country.toUpperCase()} 상세 정보 캐시 ${
-          countryFiles.length
-        }개 삭제 완료`,
-      );
+      // 리뷰 추출
+      const reviewSelectors = [
+        '[class*="review"]',
+        '[class*="editorial"]',
+        '.book-review',
+        '[data-test*="review"]',
+      ];
 
-      res.json({
-        message: `${country.toUpperCase()} 캐시가 삭제되었습니다`,
-        deletedDetails: countryFiles.length,
-      });
-    } catch (err) {
-      console.log(`상세 정보 캐시 파일 없음: ${country}`);
-      res.json({
-        message: `${country.toUpperCase()} 목록 캐시가 삭제되었습니다`,
-        deletedDetails: 0,
-      });
-    }
+      for (const sel of reviewSelectors) {
+        const el = document.querySelector(sel);
+        if (el && el.innerText.trim().length > 50) {
+          review = el.innerText.trim();
+          break;
+        }
+      }
+
+      // Publisher 추출
+      const allText = document.body.innerText;
+      const pubMatch = allText.match(/Publisher[:\s]+([^\n]+)/i);
+      if (pubMatch) {
+        publisher = pubMatch[1].trim();
+      }
+
+      // 상세 정보 섹션에서도 추출 시도
+      if (!publisher) {
+        const detailElements = document.querySelectorAll(
+          '[class*="book-info"], [class*="details"], .specifications',
+        );
+        detailElements.forEach(section => {
+          const text = section.innerText;
+          if (text.includes('Publisher')) {
+            const match = text.match(/Publisher[:\s]+([^\n]+)/i);
+            if (match) publisher = match[1].trim();
+          }
+        });
+      }
+
+      return {
+        description,
+        review,
+        publisher,
+      };
+    });
+
+    await browser.close();
+
+    await writeDetailCache('uk', url, bookDetail);
+
+    res.json(bookDetail);
   } catch (err) {
-    res.status(500).json({ error: '캐시 삭제 실패', message: err.message });
+    console.error('❌ 영국 책 상세 정보 크롤링 실패:', err);
+    res.status(500).json({
+      error: '상세 정보 크롤링 실패',
+      message: err.message,
+    });
   }
 });
 
@@ -948,7 +1224,7 @@ app.delete('/cache/:country', async (req, res) => {
 async function warmupCache() {
   console.log('🔥 캐시 워밍업 시작...');
 
-  const countries = ['kr', 'us', 'jp'];
+  const countries = ['kr', 'us', 'jp', 'uk'];
 
   for (const country of countries) {
     try {
@@ -965,6 +1241,8 @@ async function warmupCache() {
           booksResponse = await axios.get('http://localhost:4000/us-books');
         } else if (country === 'jp') {
           booksResponse = await axios.get('http://localhost:4000/jp-books');
+        } else if (country === 'uk') {
+          booksResponse = await axios.get('http://localhost:4000/uk-books');
         }
 
         console.log(`✅ ${country.toUpperCase()} 목록 워밍업 완료`);
@@ -1007,7 +1285,9 @@ async function warmupBookDetails(country, books) {
           ? '/kr-book-detail'
           : country === 'us'
           ? '/us-book-detail'
-          : '/jp-book-detail';
+          : country === 'jp'
+          ? '/jp-book-detail'
+          : '/uk-book-detail';
 
       await axios.get(
         `http://localhost:4000${endpoint}?url=${encodeURIComponent(book.link)}`,
@@ -1043,7 +1323,7 @@ function startCacheRefreshSchedule() {
     console.log('⏰ 정기 캐시 갱신 시작...');
 
     // 모든 캐시 삭제
-    for (const country of ['kr', 'us', 'jp']) {
+    for (const country of ['kr', 'us', 'jp', 'uk']) {
       try {
         const cacheFile = CACHE_FILES[country];
         await fs.unlink(cacheFile);

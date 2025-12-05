@@ -175,6 +175,10 @@ export default function KrDetail({ route, navigation }) {
               <Text style={styles.closeButtonText}>✕</Text>
             </TouchableOpacity>
           </View>
+          {/* 아래 코드 3줄은 광고부분 추가한 것*/}
+          <View style={styles.adSpace}>
+            <Text style={styles.adPlaceholder}>[ AdMob 광고 영역 ]</Text>
+          </View>
           <WebView source={{ uri: wikiUrl }} style={styles.webview} />
         </View>
       </Modal>
@@ -265,10 +269,22 @@ const styles = StyleSheet.create({
   },
   modalHeader: {
     backgroundColor: '#111',
-    paddingTop: 50,
+    paddingTop: 50, // 상태바 공간
     paddingBottom: 10,
     paddingHorizontal: 20,
     alignItems: 'flex-end',
+  },
+  adSpace: {
+    // 광고 공간 추가
+    height: 50, // 배너 광고 높이
+    backgroundColor: '#f0f0f0', // 회색으로 표시 (나중에 광고로 대체)
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  adPlaceholder: {
+    // 임시 텍스트
+    color: '#999',
+    fontSize: 12,
   },
   closeButton: {
     width: 40,

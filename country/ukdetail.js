@@ -1,4 +1,3 @@
-// UsDetail.js
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -14,7 +13,7 @@ import {
 import { useBookmark } from '../BookmarkContext';
 import { WebView } from 'react-native-webview';
 
-export default function UsDetail({ route, navigation }) {
+export default function UkDetail({ route, navigation }) {
   const { book } = route.params;
   const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,13 +21,12 @@ export default function UsDetail({ route, navigation }) {
   const [showWiki, setShowWiki] = useState(false);
   const [wikiUrl, setWikiUrl] = useState('');
 
-  // UsDetail.js의 useEffect 부분 수정
   useEffect(() => {
     if (book.link) {
       console.log('📘 요청 URL:', book.link);
 
       fetch(
-        `http://10.0.2.2:4000/us-book-detail?url=${encodeURIComponent(
+        `http://10.0.2.2:4000/uk-book-detail?url=${encodeURIComponent(
           book.link,
         )}`,
       )
@@ -83,7 +81,7 @@ export default function UsDetail({ route, navigation }) {
         <Image source={{ uri: book.image }} style={styles.image} />
         <TouchableOpacity
           style={styles.bookmarkButton}
-          onPress={() => toggleBookmark({ ...book, country: 'US' })} // item → book
+          onPress={() => toggleBookmark({ ...book, country: 'UK' })} // item → book
         >
           <Text style={styles.bookmarkIcon}>
             {isBookmarked(book.title) ? '⭐' : '☆'} {/* item → book */}
@@ -124,17 +122,17 @@ export default function UsDetail({ route, navigation }) {
               <>
                 <Text style={styles.section}>📖 책 소개</Text>
                 <Text style={styles.text}>
-                  Waterstones 베스트셀러에 선정된 인기 도서입니다. 자세한
-                  줄거리와 리뷰는 아래 버튼을 눌러 Waterstones에서 확인하세요.
+                  Amazon 베스트셀러에 선정된 인기 도서입니다. 자세한 줄거리와
+                  리뷰는 아래 버튼을 눌러 Amazon에서 확인하세요.
                 </Text>
               </>
             )}
 
-            {/* 저자 정보 */}
-            {details?.authorInfo && (
+            {/* 리뷰 */}
+            {details?.review && (
               <>
-                <Text style={styles.section}>✍️ 저자 정보</Text>
-                <Text style={styles.text}>{details.authorInfo}</Text>
+                <Text style={styles.section}>⭐ 리뷰</Text>
+                <Text style={styles.text}>{details.review}</Text>
               </>
             )}
           </>
@@ -144,7 +142,7 @@ export default function UsDetail({ route, navigation }) {
           style={styles.linkButton}
           onPress={() => Linking.openURL(book.link)}
         >
-          <Text style={styles.linkText}>🔗 Waterstones에서 자세히 보기</Text>
+          <Text style={styles.linkText}>🔗 Amazon에서 자세히 보기</Text>
         </TouchableOpacity>
       </ScrollView>
       {/* Wikipedia 모달 */}

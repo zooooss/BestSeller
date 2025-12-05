@@ -1,7 +1,19 @@
 {
-  "timestamp": 1764120958716,
+  "timestamp": 1764894319138,
   "data": {
     "books": [
+      {
+        "title": "成瀬は都を駆け抜ける",
+        "author": "宮島 未奈【著】",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/41035/410354953X.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784103549536"
+      },
+      {
+        "title": "転生したらスライムだった件 〈２３〉 ＧＣノベルズ",
+        "author": "伏瀬【著】/みっつばー【イラスト】",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/48671/4867168734.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784867168738"
+      },
       {
         "title": "変な地図",
         "author": "雨穴【著】",
@@ -9,40 +21,28 @@
         "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784575248104"
       },
       {
-        "title": "勝負眼 - 「押し引き」を見極める思考と技術",
-        "author": "藤田 晋【著】",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/41639/4163920471.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784163920474"
+        "title": "暁星",
+        "author": "湊 かなえ【著】",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/45752/4575248568.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784575248562"
       },
       {
-        "title": "ジャングル＆Ｃｏ．（アンドコ） ［バラエティ］",
-        "author": "",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/48135/4813523137.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784813523130"
+        "title": "転生したらスライムだった件番外編～とある休暇の過ごし方～ ＧＣノベルズ",
+        "author": "伏瀬【著】/みっつばー【イラスト】/高田 裕三【キャラクター原案】",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/48671/4867168742.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784867168745"
       },
       {
-        "title": "ハーバード、スタンフォード、オックスフォード・・・ 科学的に証明された すごい習慣 - 人生が変わるテクニック１１２個集めました",
-        "author": "堀田 秀吾【著】",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/48156/481563341X.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784815633417"
+        "title": "不滅なるものへの挑戦 ＯＲ ＢＯＯＫＳ",
+        "author": "大川 隆法【著】",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/48233/4823304683.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784823304682"
       },
       {
-        "title": "君が面会に来たあとで",
-        "author": "Ｚ李【著】",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/43440/4344045343.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784344045347"
-      },
-      {
-        "title": "つかめ！英語ダマン 英会話で世界にとびだせ！編",
-        "author": "シン・テフン/ナ・スンフン",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/48387/4838733615.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784838733613"
-      },
-      {
-        "title": "３か月でマスターする古代文明 〈１２月号（２０２５年）〉 おとなの学びシリーズ",
-        "author": "関雄二/小野林太郎",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/41422/4142288938.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784142288939"
+        "title": "ＧＯＡＴ 〈Ｗｉｎｔｅｒ ２０２６〉 ｓｈｏｇａｋｕｋａｎ ｓｅｌｅｃｔ ｍｏｏｋ",
+        "author": "小学館",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/40980/4098021188.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784098021185"
       },
       {
         "title": "明るい暮らしの家計簿 〈２０２６年版〉",
@@ -51,40 +51,22 @@
         "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784887860919"
       },
       {
-        "title": "命の燃やし方",
-        "author": "鈴木 大飛【著】",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/40654/4065405203.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784065405208"
+        "title": "ドラゴンクエスト１＆２公式ガイドブック ＨＤ－２Ｄ版 ＳＥ－ＭＯＯＫ",
+        "author": "スクウェア・エニックス",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/43010/4301000844.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784301000846"
       },
       {
-        "title": "’２５ ＦＵＳＩＯＮ ＰＡＣＫ ベースボールカード",
+        "title": "１４５ ビジネス手帳〈小型版〉６ 高橋書店 ２０２６年版 黒 ウィークリー 手",
         "author": "",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/45832/4583218265.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784583218267"
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/44718/4471851454.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784471851453"
       },
       {
-        "title": "考察する若者たち ＰＨＰ新書",
-        "author": "三宅 香帆【著】",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/45698/4569860176.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784569860176"
-      },
-      {
-        "title": "ＯＮＥ ＰＩＥＣＥ ｍａｇａｚｉｎｅ 〈０２０〉 特集：週刊少年ジャンプとＯＮＥ ＰＩＥＣＥ ＳＨＵＥＩＳＨＡ ＭＯＯＫ",
-        "author": "尾田栄一郎",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/40810/4081024391.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784081024391"
-      },
-      {
-        "title": "ジャンケットバンク サイド・ベット・ストーリーズ ＪＵＭＰ ｊＢＯＯＫＳ",
-        "author": "菱川 さかく【小説】/田中 一行【原作・イラスト】",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/40870/4087035654.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784087035650"
-      },
-      {
-        "title": "社外ＣＦＯになって、たちまち年収１２００万円を稼ぐ方法",
-        "author": "長友大典",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/47991/4799113534.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784799113530"
+        "title": "ハーバード、スタンフォード、オックスフォード・・・ 科学的に証明された すごい習慣 - 人生が変わるテクニック１１２個集めました",
+        "author": "堀田 秀吾【著】",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/48156/481563341X.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784815633417"
       },
       {
         "title": "世界一かんたん定番年賀状 〈２０２６〉",
@@ -93,22 +75,34 @@
         "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784049112849"
       },
       {
+        "title": "成長以外、全て死",
+        "author": "中野 優作【著】",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/43440/4344044835.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784344044838"
+      },
+      {
+        "title": "ジャングル＆Ｃｏ．（アンドコ） ［バラエティ］",
+        "author": "",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/48135/4813523137.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784813523130"
+      },
+      {
         "title": "いちばんかんたん＋いちばんお値うち家計ノート 〈２０２６〉 ＬＡＤＹＢＩＲＤ Ｓｈｏｇａｋｕｋａｎ ｊｉｔｓｕｙｏｕ ｓ",
         "author": "",
         "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/40980/4098023199.jpg",
         "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784098023196"
       },
       {
-        "title": "シンプル家計ノート 〈２０２６〉 ＯＲＡＮＧＥ ＰＡＧＥ ＭＯＯＫ",
-        "author": "",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/48659/4865937889.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784865937886"
+        "title": "「人生１００年時代」を楽しく生きる 起業思考",
+        "author": "小池 信三【著】",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/41986/4198660654.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784198660659"
       },
       {
-        "title": "ウォード博士の驚異の「動物行動学入門」動物のひみつ - 争い・裏切り・協力・繁栄の謎を追う",
-        "author": "ウォード，アシュリー【著】/夏目 大【訳】",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/44781/4478116288.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784478116289"
+        "title": "命の燃やし方",
+        "author": "鈴木 大飛【著】",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/40654/4065405203.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784065405208"
       },
       {
         "title": "はやわざ年賀状 〈２０２６〉 ｉｍｐｒｅｓｓ ｍｏｏｋ",
@@ -117,10 +111,16 @@
         "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784295022626"
       },
       {
-        "title": "かんたん家計ノート 〈２０２６〉 講談社ＭＯＯＫ",
-        "author": "講談社",
-        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/40654/4065407575.jpg",
-        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784065407578"
+        "title": "陰謀論と排外主義 分断社会を読み解く７つの視点 扶桑社新書",
+        "author": "藤倉 善郎/黒猫ドラネコ/山崎 リュウキチ/古谷 経衡/選挙ウォッチャーちだい/清 義明/菅野 完【著】",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/45941/4594101615.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784594101619"
+      },
+      {
+        "title": "３か月でマスターする古代文明 〈１２月号（２０２５年）〉 おとなの学びシリーズ",
+        "author": "関雄二/小野林太郎",
+        "image": "https://www.kinokuniya.co.jp/images/goods/ar2/web/imgdata2/41422/4142288938.jpg",
+        "link": "https://www.kinokuniya.co.jp/f/dsg-01-9784142288939"
       }
     ]
   }
